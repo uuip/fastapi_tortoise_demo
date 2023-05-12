@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "fastapidemo"
+version = "0.1.0"
+description = ""
+authors = ["uuip <uuip@users.noreply.github.com>"]
+readme = "README.md"
+
+[[tool.poetry.source]]
+name = "tuna"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+[tool.poetry.dependencies]
+python = "^3.10"
+wheel = ">=0.40.0"
+setuptools = ">=67.7.2"
+
+fastapi = ">=0.95.1"
+tortoise-orm = { extras = ["accel", "asyncpg"], version = ">=0.19.3" }
+uvicorn = ">=0.22.0"
+pydantic = { extras = ["dotenv"], version = ">=1.10.7" }
+pylint = "^2.17.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
