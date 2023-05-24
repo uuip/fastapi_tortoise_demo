@@ -59,7 +59,7 @@ app.openapi = custom_openapi(app)
 
 register_tortoise(
     app,
-    db_url=settings.db,
+    db_url=settings.db+"?minsize=5&maxsize=50",  # 每个进程worker连接数
     modules={"models": ["models"]},
     generate_schemas=False,
     # config={
