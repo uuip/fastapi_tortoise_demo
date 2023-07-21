@@ -17,7 +17,7 @@ class BizException(Exception):
 
     @classmethod
     def handler(cls, request: Request, exc: "BizException") -> Response:
-        return JSONResponse(exc.err.dict())
+        return JSONResponse(exc.err.model_dump())
 
     @classmethod
     def register(cls, app: FastAPI):
