@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Optional
 from urllib.parse import urlparse
 
-from pydantic import Field, PostgresDsn, model_validator
+from pydantic import Field, model_validator
 from pydantic_settings import SettingsConfigDict, BaseSettings
 
 # from pydantic import Json,RedisDsn,HttpUrl,EmailStr
@@ -15,7 +15,7 @@ _env_file = Path(__file__).parent / ".env"
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=_env_file, extra="ignore")
 
-    db: PostgresDsn = Field(alias="db")
+    db: str = Field(alias="db")
     db_dict: Optional[dict]
     db_django: Optional[dict]
 
