@@ -14,11 +14,12 @@ priority = "default"
 python = "^3.10"
 wheel = ">=0.40.0"
 setuptools = ">=67.7.2"
+
 pydantic = "^2.0.3"
 pydantic-settings = "^2.0.2"
 fastapi = "^0.100.0"
 tortoise-orm = { extras = ["accel", "asyncpg"], version = ">=0.19.3" }
-uvicorn = "^0.22.0"
+uvicorn = "^0.23.1"
 
 [build-system]
 requires = ["poetry-core"]
