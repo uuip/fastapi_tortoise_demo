@@ -1,4 +1,5 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from pydantic import (
     BaseModel as _BaseModel,
@@ -8,9 +9,7 @@ from pydantic import (
     computed_field,
 )
 
-from models import User_Schema, Tree_Schema
-
-sh = timezone(timedelta(hours=+8))
+sh = ZoneInfo("Asia/Shanghai")
 
 
 def transform_time(dt):
@@ -23,9 +22,10 @@ def transform_naive_time(dt):
 
 class BaseModel(_BaseModel):
     model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+    updated_at: datetime
 
-
-class TreeSchema(Tree_Schema):
     @field_validator("created_at", "updated_at", mode="before")
     def transform_time(cls, v):
         if isinstance(v, int):
@@ -36,14 +36,16 @@ class TreeSchema(Tree_Schema):
     def serializes_time(self, v):
         return transform_naive_time(v)
 
+
+class TreeSchema(BaseModel):
+    name: str
+    desc: str
+    energy: int
+
     @computed_field(return_type=int)
     @property
     def someattr(self):
         return self.created_at.year
-
-
-class UserSchema(User_Schema):
-    ...
 
 
 class Item(BaseModel):

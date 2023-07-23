@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "fastapidemo"
+name = "fastapi-tortoise"
 version = "0.1.0"
 description = ""
 authors = ["uuip <uuip@users.noreply.github.com>"]
@@ -11,7 +11,7 @@ url = "https://mirrors.aliyun.com/pypi/simple/"
 priority = "default"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 wheel = ">=0.40.0"
 setuptools = ">=67.7.2"
 
@@ -20,6 +20,7 @@ pydantic-settings = "^2.0.2"
 fastapi = "^0.100.0"
 tortoise-orm = { extras = ["accel", "asyncpg"], version = ">=0.19.3" }
 uvicorn = "^0.23.1"
+tzdata = { version = "^2023.3", markers = "platform_system == 'Windows'" }
 
 [build-system]
 requires = ["poetry-core"]

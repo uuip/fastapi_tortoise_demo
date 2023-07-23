@@ -15,7 +15,6 @@ from api import data_api
 from response import ERROR, PARAM_ERROR
 from response.exceptions import BizException
 from settings import settings
-from utils import custom_openapi
 
 app = FastAPI(title="demo project")
 app.add_middleware(
@@ -55,11 +54,10 @@ async def handle_orm_error(request: Request, exc: BaseORMException):
 
 BizException.register(app)
 app.include_router(data_api)
-app.openapi = custom_openapi(app)
 
 register_tortoise(
     app,
-    db_url=settings.db+"?minsize=5&maxsize=50",  # 每个进程worker连接数
+    db_url=settings.db + "?minsize=5&maxsize=50",  # 每个进程worker连接数
     modules={"models": ["models"]},
     generate_schemas=False,
     # config={
@@ -89,6 +87,6 @@ if __name__ == "__main__":
         port=8000,
         reload=False,
         workers=os.cpu_count(),
-        loop="uvloop",
+        # loop="uvloop",
         log_level=logging.ERROR,
     )
