@@ -2,7 +2,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from pydantic import (
-    BaseModel as _BaseModel,
+    BaseModel,
     field_validator,
     ConfigDict,
     field_serializer,
@@ -12,15 +12,7 @@ from pydantic import (
 sh = ZoneInfo("Asia/Shanghai")
 
 
-def transform_time(dt):
-    return dt.astimezone(sh).strftime("%Y-%m-%d %H:%M:%S +08:00")
-
-
-def transform_naive_time(dt):
-    return dt.strftime("%Y-%m-%d %H:%M:%S")
-
-
-class BaseModel(_BaseModel):
+class BaseSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     created_at: datetime
@@ -34,10 +26,10 @@ class BaseModel(_BaseModel):
 
     @field_serializer("created_at", "updated_at")
     def serializes_time(self, v):
-        return transform_naive_time(v)
+        return v.strftime("%Y-%m-%d %H:%M:%S")
 
 
-class TreeSchema(BaseModel):
+class TreeSchema(BaseSchema):
     name: str
     desc: str
     energy: int
