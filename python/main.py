@@ -31,16 +31,6 @@ async def gettime() -> int:
     return int(time.time())
 
 
-@app.on_event("startup")
-async def startup_event():
-    ...
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    ...
-
-
 @app.exception_handler(RequestValidationError)
 async def handle_params_error(requset: Request, exc: RequestValidationError):
     detail = "; ".join([get_exc_loc(x["loc"]) + ": " + x["msg"] for x in exc.errors()])
@@ -60,16 +50,6 @@ register_tortoise(
     db_url=settings.db + "?minsize=5&maxsize=50",  # 每个进程worker连接数
     modules={"models": ["models"]},
     generate_schemas=False,
-    # config={
-    #         'apps'       : {'models': {'models': ["models"]}},
-    #         'connections': {
-    #                 'default': {
-    #                         'engine'     : 'tortoise.backends.asyncpg',
-    #                         'credentials': settings.db_dict,
-    #                         'maxsize'    : 10,
-    #                         }
-    #                 }
-    #         }
 )
 
 
@@ -88,5 +68,5 @@ if __name__ == "__main__":
         reload=False,
         workers=os.cpu_count(),
         # loop="uvloop",
-        log_level=logging.ERROR,
+        log_level=logging.INFO,
     )
