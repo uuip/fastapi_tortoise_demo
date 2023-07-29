@@ -18,6 +18,7 @@ class BaseSchema(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+    # mode="before"：输入数据转换为字段前验证，after则是转换后再验证。函数第一个参数cls
     @field_validator("created_at", "updated_at", mode="before")
     def transform_time(cls, v):
         if isinstance(v, int):

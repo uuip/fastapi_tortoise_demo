@@ -2,7 +2,7 @@ from fastapi import Query, APIRouter, Depends
 
 from models import Trees
 from pagination import Page, Pagination
-from response import OK, R
+from response import OK, R, ApiException, ERROR
 from schemas import TreeSchema, Item
 
 data_api = APIRouter(prefix="/tree", tags=["管理树木实体"])
@@ -10,6 +10,8 @@ data_api = APIRouter(prefix="/tree", tags=["管理树木实体"])
 
 @data_api.get("/q", response_model=Page[TreeSchema], summary="条件查询树木")
 async def query_trees(pagination: Pagination = Depends(), energy: int = Query(ge=0)):
+    if energy == 0:
+        raise ApiException(ERROR.excinfo("demo error"))
     qs = Trees.filter(energy__gt=energy)
     return await Page.create(qs, pagination)
 

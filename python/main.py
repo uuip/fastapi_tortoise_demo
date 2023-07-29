@@ -13,7 +13,7 @@ from tortoise.exceptions import BaseORMException
 
 from api import data_api
 from response import ERROR, PARAM_ERROR
-from response.exceptions import BizException
+from response.exceptions import ApiException
 from settings import settings
 
 app = FastAPI(title="demo project")
@@ -42,7 +42,7 @@ async def handle_orm_error(request: Request, exc: BaseORMException):
     return JSONResponse(jsonable_encoder(ERROR(exc.args)))
 
 
-BizException.register(app)
+ApiException.register(app)
 app.include_router(data_api)
 
 register_tortoise(
@@ -67,6 +67,5 @@ if __name__ == "__main__":
         port=8000,
         reload=False,
         workers=os.cpu_count(),
-        # loop="uvloop",
         log_level=logging.INFO,
     )

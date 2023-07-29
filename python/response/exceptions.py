@@ -1,22 +1,22 @@
-import typing
+from typing import Self, Any
 
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 
-if typing.TYPE_CHECKING:
-    from .base import ERR
+from .generic import ErrResponse
 
 
-class BizException(Exception):
-    # Business Exception，指业务代码
-    err: "ERR"
-
-    def __init__(self, err: "ERR", *args: object) -> None:
+class ApiException(Exception):
+    def __init__(self, err: ErrResponse, *args: Any) -> None:
+        # err是ErrResponse实例，注册异常handler后，调用model_dump
+        # ERROR = ErrResponse.register(400, "请求错误")
+        # raise ApiException(ERROR)
+        # raise ApiException(ERROR.excinfo("other info"))
         super().__init__(*args)
         self.err = err
 
     @classmethod
-    def handler(cls, request: Request, exc: "BizException") -> Response:
+    def handler(cls, request: Request, exc: Self) -> Response:
         return JSONResponse(exc.err.model_dump())
 
     @classmethod

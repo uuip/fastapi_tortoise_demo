@@ -1,6 +1,6 @@
-from typing import TypeVar, Generic, Sequence
+from typing import TypeVar, Generic, Sequence, Self
 
-from pydantic import Field, BaseModel
+from pydantic import Field, BaseModel, conint
 from tortoise.queryset import QuerySet
 
 T = TypeVar("T")
@@ -13,13 +13,13 @@ class Pagination(BaseModel):
 
 class Page(BaseModel, Generic[T]):
     code: int = 200
-    page: int = Field(1)
-    size: int = Field(10)
-    total: int = Field(0)
+    page: conint(ge=1)
+    size: conint(ge=1)
+    total: conint(ge=0)
     data: Sequence[T]
 
     @classmethod
-    async def create(cls, qs: QuerySet, pagination: Pagination) -> "Page[T]":
+    async def create(cls, qs: QuerySet, pagination: Pagination) -> Self:
         size = pagination.size
         page = pagination.page
         # 大量数据时计算total，非常影响性能；total可以单独一个接口，查询一次即可
