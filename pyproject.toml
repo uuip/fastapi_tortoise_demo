@@ -5,15 +5,9 @@ description = ""
 authors = ["uuip <uuip@users.noreply.github.com>"]
 readme = "README.md"
 
-[[tool.poetry.source]]
-name = "aliyun"
-url = "https://mirrors.aliyun.com/pypi/simple/"
-priority = "default"
-
 [tool.poetry.dependencies]
 python = "^3.11"
-wheel = ">=0.40.0"
-setuptools = ">=67.7.2"
+setuptools = "*"
 
 pydantic = "^2.0.3"
 pydantic-settings = "^2.0.2"
