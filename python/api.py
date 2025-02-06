@@ -1,17 +1,17 @@
-import random
-
 from fastapi import Query, APIRouter, Depends
 
 from models import Trees
 from pagination import Page, Pagination
-from response import OK, R
+from response import OK, R, ApiException, ERROR
 from schemas import TreeSchema, Item
 
 data_api = APIRouter(prefix="/tree", tags=["管理树木实体"])
 
 
-@data_api.get("/q", response_model=Page[TreeSchema], summary="条件查询树木", )
+@data_api.get("/q", response_model=Page[TreeSchema], summary="条件查询树木")
 async def query_trees(pagination: Pagination = Depends(), energy: int = Query(ge=0)):
+    if energy == 0:
+        raise ApiException(ERROR.excinfo("demo error"))
     qs = Trees.filter(energy__gt=energy)
     return await Page.create(qs, pagination)
 
@@ -24,8 +24,9 @@ async def query_tree(id: int):
 
 @data_api.post("/update", response_model=R[TreeSchema], summary="更新单个树木信息")
 async def update_tree(item: Item):
-    obj = await Trees.filter(id=random.randint(1, 1000000)).first()
-    obj.energy = item.energy
-    await obj.save(update_fields=["energy"])
+    # obj = await Trees.filter(id=random.randint(1, 1000000)).first()
+    # obj.energy = item.energy
+    # await obj.save(update_fields=["energy"])
+    await Trees.filter(id=item.id).update(energy=item.energy)
     # return JSONResponse(status_code=status.HTTP_201_CREATED, content=item)
-    return OK(obj)
+    return OK({"id": item.id})

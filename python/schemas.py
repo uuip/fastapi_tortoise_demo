@@ -1,38 +1,44 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
-from pydantic import BaseModel as _BaseModel, validator
+from pydantic import (
+    BaseModel,
+    field_validator,
+    ConfigDict,
+    field_serializer,
+    computed_field,
+)
 
-from models import User_Schema, Tree_Schema
-
-sh = timezone(timedelta(hours=+8))
-
-
-def transform_time(dt):
-    return dt.astimezone(sh).strftime("%Y-%m-%d %H:%M:%S +08:00")
-
-
-def transform_naive_time(dt):
-    return dt.strftime("%Y-%m-%d %H:%M:%S")
+sh = ZoneInfo("Asia/Shanghai")
 
 
-class BaseModel(_BaseModel):
-    class Config:
-        orm_mode = True
+class BaseSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+    updated_at: datetime
 
-
-class TreeSchema(Tree_Schema):
-    @validator("create_at", "update_at")
+    # mode="before"：输入数据转换为字段前验证，after则是转换后再验证。函数第一个参数cls
+    @field_validator("created_at", "updated_at", mode="before")
     def transform_time(cls, v):
         if isinstance(v, int):
             v = datetime.fromtimestamp(v)
-            return transform_naive_time(v)
-        if isinstance(v, datetime):
-            return transform_naive_time(v)
         return v
 
+    @field_serializer("created_at", "updated_at")
+    def serializes_time(self, v):
+        return v.strftime("%Y-%m-%d %H:%M:%S")
 
-class UserSchema(User_Schema):
-    ...
+
+class TreeSchema(BaseSchema):
+    name: str
+    desc: str
+    energy: int
+
+    @computed_field(return_type=int)
+    @property
+    def someattr(self):
+        return self.created_at.year
 
 
 class Item(BaseModel):
